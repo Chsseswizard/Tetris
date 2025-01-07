@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>俄羅斯方塊</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-board"></div>
+        <div class="game-info">
+            <div class="score">分數：<span id="score">0</span></div>
+            <div class="level">等級：<span id="level">1</span></div>
+            <div class="controls">
+                <button id="start-btn">開始遊戲</button>
+                <button id="pause-btn">暫停</button>
+                <button id="reset-btn">重置</button>
+            </div>
+            <div class="instructions">
+                <h3>操作說明：</h3>
+                <p>← →：左右移動</p>
+                <p>↑：旋轉</p>
+                <p>↓：加速下落</p>
+                <p>P：暫停/繼續</p>
+            </div>
+        </div>
+    </div>
+    <script src="tetris.js"></script>
+</body>
+</html> 
