@@ -163,6 +163,15 @@ class Tetris {
     }
 
     handleKeyPress(event) {
+        // 先處理空白鍵，防止頁面滾動
+        if (event.code === 'Space') {  // 改用 event.code 來判斷空白鍵
+            event.preventDefault();  // 防止頁面滾動
+            if (this.isPlaying) {
+                this.hardDrop();
+            }
+            return;
+        }
+
         if (event.key === 'p') {
             if (this.isPlaying) {
                 this.pause();
@@ -186,10 +195,6 @@ class Tetris {
                 break;
             case 'ArrowUp':
                 this.rotate();
-                break;
-            case ' ':  // 空白鍵
-                event.preventDefault();  // 防止頁面滾動
-                this.hardDrop();
                 break;
         }
     }
