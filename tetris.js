@@ -187,6 +187,10 @@ class Tetris {
             case 'ArrowUp':
                 this.rotate();
                 break;
+            case ' ':  // 空白鍵
+                event.preventDefault();  // 防止頁面滾動
+                this.hardDrop();
+                break;
         }
     }
 
@@ -279,6 +283,28 @@ class Tetris {
         document.getElementById('score').textContent = '0';
         document.getElementById('level').textContent = '1';
         document.getElementById('pause-btn').textContent = '暫停';
+    }
+
+    // 添加新方法：快速下落到底部
+    hardDrop() {
+        let dropDistance = 0;
+        while (this.canMove(this.currentPosition.x, this.currentPosition.y + 1)) {
+            this.currentPosition.y++;
+            dropDistance++;
+        }
+        this.updateBoardDisplay();
+        
+        // 立即凍結方塊並生成新的
+        this.freezePiece();
+        this.checkLines();
+        this.generateNewPiece();
+        if (!this.canMove(this.currentPosition.x, this.currentPosition.y)) {
+            this.gameOver();
+        }
+
+        // 可以選擇根據下落距離增加分數
+        this.score += dropDistance;
+        document.getElementById('score').textContent = this.score;
     }
 }
 
