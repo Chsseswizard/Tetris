@@ -163,6 +163,7 @@ class Tetris {
     }
 
     handleKeyPress(event) {
+        console.log('Key pressed:', event.code);  // 添加這行來檢查
         // 先處理空白鍵，防止頁面滾動
         if (event.code === 'Space') {
             event.preventDefault();
@@ -206,7 +207,7 @@ class Tetris {
                     const boardY = this.currentPosition.y + y;
                     const boardX = this.currentPosition.x + x;
                     if (boardY >= 0) {
-                        this.board[boardY][boardX] = this.currentShape;  // 保存方塊類型而不是簡單的1
+                        this.board[boardY][boardX] = this.currentShape;
                     }
                 }
             }
@@ -246,7 +247,7 @@ class Tetris {
         
         // 根據等級調整下落速度
         clearInterval(this.gameInterval);
-        const speed = Math.max(100, 1000 - (this.level - 1) * 100);  // 最快100ms一次
+        const speed = Math.max(100, 1000 - (this.level - 1) * 100);
         this.gameInterval = setInterval(() => this.moveDown(), speed);
     }
 
@@ -290,7 +291,6 @@ class Tetris {
         document.getElementById('pause-btn').textContent = '暫停';
     }
 
-    // 添加新方法：快速下落到底部
     hardDrop() {
         let dropDistance = 0;
         while (this.canMove(this.currentPosition.x, this.currentPosition.y + 1)) {
@@ -332,4 +332,4 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('reset-btn').addEventListener('click', () => {
         game.reset();
     });
-}); 
+});
