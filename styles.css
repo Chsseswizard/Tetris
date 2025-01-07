@@ -6,6 +6,7 @@
 }
 
 .game-board {
+    position: relative;
     width: 300px;
     height: 600px;
     background-color: #f0f0f0;
@@ -71,3 +72,27 @@ button:hover {
     font-size: 20px;
     margin-bottom: 10px;
 }
+
+.pause-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: white;
+    z-index: 100;
+}
+
+.pause-text {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.pause-subtext {
+    font-size: 16px;
+} 
