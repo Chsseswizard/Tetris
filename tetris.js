@@ -169,23 +169,26 @@ class Tetris {
     }
 
     handleKeyPress(event) {
-        console.log('Key pressed:', event.code);  // 添加這行來檢查
-        // 先處理空白鍵，防止頁面滾動
-        if (event.code === 'Space') {
-            event.preventDefault();
+        console.log('Key pressed:', event.code);
+
+        // P 鍵暫停/繼續處理
+        if (event.code === 'KeyP') {
             if (this.isPlaying) {
-                this.hardDrop();
+                this.pause();
+            } else {
+                // 只有在遊戲已經開始過（有當前方塊）時才能繼續
+                if (this.currentPiece) {
+                    this.resume();
+                }
             }
             return;
         }
 
-        // 修改 P 鍵的處理邏輯
-        if (event.code === 'KeyP') {
-            // 移除 isPlaying 檢查，讓暫停時也能處理 P 鍵
+        // 空白鍵處理
+        if (event.code === 'Space') {
+            event.preventDefault();
             if (this.isPlaying) {
-                this.pause();
-            } else {
-                this.resume();
+                this.hardDrop();
             }
             return;
         }
@@ -273,22 +276,16 @@ class Tetris {
             clearInterval(this.gameInterval);
             this.isPlaying = false;
             document.getElementById('pause-btn').textContent = '繼續';
-            // 不要在暫停時移除鍵盤事件監聽器，這樣才能檢測到 P 鍵的按下
-            // document.removeEventListener('keydown', this.handleKeyPress);
-            // 顯示暫停畫面
             document.getElementById('pause-screen').style.display = 'flex';
         }
     }
 
     resume() {
-        if (!this.isPlaying) {
+        if (!this.isPlaying && this.currentPiece) {  // 確保有遊戲在進行
             this.isPlaying = true;
             const speed = Math.max(100, 1000 - (this.level - 1) * 100);
             this.gameInterval = setInterval(() => this.moveDown(), speed);
             document.getElementById('pause-btn').textContent = '暫停';
-            // 不需要重新添加事件監聽器，因為沒有移除
-            // document.addEventListener('keydown', this.handleKeyPress);
-            // 隱藏暫停畫面
             document.getElementById('pause-screen').style.display = 'none';
         }
     }
