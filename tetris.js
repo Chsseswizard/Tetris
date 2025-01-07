@@ -35,6 +35,9 @@ class Tetris {
         
         this.currentShape = null;  // 保存當前方塊的形狀名稱
 
+        // 添加一個標記來追踪是否已經添加了鍵盤事件監聽器
+        this.hasKeyListener = false;
+
         // 綁定事件處理器，確保 this 指向正確
         this.handleKeyPress = this.handleKeyPress.bind(this);
     }
@@ -158,8 +161,11 @@ class Tetris {
         const speed = Math.max(100, 1000 - (this.level - 1) * 100);
         this.gameInterval = setInterval(() => this.moveDown(), speed);
         
-        // 添加鍵盤控制
-        document.addEventListener('keydown', this.handleKeyPress);
+        // 只在第一次啟動遊戲時添加鍵盤事件監聽器
+        if (!this.hasKeyListener) {
+            document.addEventListener('keydown', this.handleKeyPress);
+            this.hasKeyListener = true;
+        }
     }
 
     handleKeyPress(event) {
@@ -257,7 +263,8 @@ class Tetris {
     gameOver() {
         this.isPlaying = false;
         clearInterval(this.gameInterval);
-        document.removeEventListener('keydown', this.handleKeyPress);
+        // 移除這行，不要在遊戲結束時移除鍵盤事件監聽器
+        // document.removeEventListener('keydown', this.handleKeyPress);
         alert(`遊戲結束！\n最終分數：${this.score}\n等級：${this.level}`);
     }
 
@@ -288,7 +295,8 @@ class Tetris {
 
     reset() {
         clearInterval(this.gameInterval);
-        document.removeEventListener('keydown', this.handleKeyPress);
+        // 移除這行，不要在重置時移除鍵盤事件監聽器
+        // document.removeEventListener('keydown', this.handleKeyPress);
         this.board = Array(20).fill().map(() => Array(10).fill(0));
         this.score = 0;
         this.level = 1;
