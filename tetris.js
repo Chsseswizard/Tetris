@@ -34,6 +34,9 @@ class Tetris {
         };
         
         this.currentShape = null;  // 保存當前方塊的形狀名稱
+
+        // 綁定事件處理器，確保 this 指向正確
+        this.handleKeyPress = this.handleKeyPress.bind(this);
     }
 
     init() {
@@ -133,12 +136,14 @@ class Tetris {
     start() {
         if (this.isPlaying) return;
         
+        this.reset(); // 開始新遊戲時重置
         this.isPlaying = true;
         this.generateNewPiece();
-        this.gameInterval = setInterval(() => this.moveDown(), 1000);
+        const speed = Math.max(100, 1000 - (this.level - 1) * 100);
+        this.gameInterval = setInterval(() => this.moveDown(), speed);
         
         // 添加鍵盤控制
-        document.addEventListener('keydown', this.handleKeyPress.bind(this));
+        document.addEventListener('keydown', this.handleKeyPress);
     }
 
     handleKeyPress(event) {
@@ -201,16 +206,18 @@ class Tetris {
 
         // 顯示當前活動方塊
         if (this.currentPiece) {
-            for (let y = 0; y < this.currentPiece.length; y++) {
-                for (let x = 0; x < this.currentPiece[y].length; x++) {
-                    if (this.currentPiece[y][x]) {
-                        const position = (this.currentPosition.y + y) * 10 + (this.currentPosition.x + x);
-                        if (position >= 0) {
-                            blocks[position].style.backgroundColor = this.colors[this.currentShape];
+            requestAnimationFrame(() => {
+                for (let y = 0; y < this.currentPiece.length; y++) {
+                    for (let x = 0; x < this.currentPiece[y].length; x++) {
+                        if (this.currentPiece[y][x]) {
+                            const position = (this.currentPosition.y + y) * 10 + (this.currentPosition.x + x);
+                            if (position >= 0) {
+                                blocks[position].style.backgroundColor = this.colors[this.currentShape];
+                            }
                         }
                     }
                 }
-            }
+            });
         }
     }
 
@@ -261,6 +268,7 @@ class Tetris {
         if (this.isPlaying) {
             clearInterval(this.gameInterval);
             this.isPlaying = false;
+            document.getElementById('pause-btn').textContent = '繼續';
         }
     }
 
@@ -269,6 +277,7 @@ class Tetris {
             this.isPlaying = true;
             const speed = Math.max(100, 1000 - (this.level - 1) * 100);
             this.gameInterval = setInterval(() => this.moveDown(), speed);
+            document.getElementById('pause-btn').textContent = '暫停';
         }
     }
 
@@ -282,6 +291,7 @@ class Tetris {
         this.updateBoardDisplay();
         document.getElementById('score').textContent = '0';
         document.getElementById('level').textContent = '1';
+        document.getElementById('pause-btn').textContent = '暫停';
     }
 }
 
@@ -291,5 +301,17 @@ document.addEventListener('DOMContentLoaded', () => {
     
     document.getElementById('start-btn').addEventListener('click', () => {
         game.start();
+    });
+
+    document.getElementById('pause-btn').addEventListener('click', () => {
+        if (game.isPlaying) {
+            game.pause();
+        } else {
+            game.resume();
+        }
+    });
+
+    document.getElementById('reset-btn').addEventListener('click', () => {
+        game.reset();
     });
 }); 
