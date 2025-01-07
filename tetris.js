@@ -64,7 +64,7 @@ class Tetris {
     moveDown() {
         if (this.canMove(this.currentPosition.x, this.currentPosition.y + 1)) {
             this.currentPosition.y++;
-            this.updateBoard();
+            this.updateBoardDisplay();
         } else {
             this.freezePiece();
             this.checkLines();
@@ -78,14 +78,14 @@ class Tetris {
     moveLeft() {
         if (this.canMove(this.currentPosition.x - 1, this.currentPosition.y)) {
             this.currentPosition.x--;
-            this.updateBoard();
+            this.updateBoardDisplay();
         }
     }
 
     moveRight() {
         if (this.canMove(this.currentPosition.x + 1, this.currentPosition.y)) {
             this.currentPosition.x++;
-            this.updateBoard();
+            this.updateBoardDisplay();
         }
     }
 
@@ -96,7 +96,7 @@ class Tetris {
         
         if (this.canMove(this.currentPosition.x, this.currentPosition.y, rotated)) {
             this.currentPiece = rotated;
-            this.updateBoard();
+            this.updateBoardDisplay();
         }
     }
 
@@ -113,78 +113,6 @@ class Tetris {
             }
         }
         return true;
-    }
-
-    updateBoard() {
-        // 清除舊的活動方塊
-        const blocks = this.gameBoard.querySelectorAll('.block');
-        blocks.forEach(block => block.classList.remove('active'));
-
-        // 更新新的活動方塊位置
-        for (let y = 0; y < this.currentPiece.length; y++) {
-            for (let x = 0; x < this.currentPiece[y].length; x++) {
-                if (this.currentPiece[y][x]) {
-                    const position = (this.currentPosition.y + y) * 10 + (this.currentPosition.x + x);
-                    if (position >= 0) {
-                        blocks[position].classList.add('active');
-                    }
-                }
-            }
-        }
-    }
-
-    start() {
-        if (this.isPlaying) return;
-        
-        this.reset(); // 開始新遊戲時重置
-        this.isPlaying = true;
-        this.generateNewPiece();
-        const speed = Math.max(100, 1000 - (this.level - 1) * 100);
-        this.gameInterval = setInterval(() => this.moveDown(), speed);
-        
-        // 添加鍵盤控制
-        document.addEventListener('keydown', this.handleKeyPress);
-    }
-
-    handleKeyPress(event) {
-        if (!this.isPlaying && event.key !== 'p') return;
-
-        switch (event.key) {
-            case 'ArrowLeft':
-                this.moveLeft();
-                break;
-            case 'ArrowRight':
-                this.moveRight();
-                break;
-            case 'ArrowDown':
-                this.moveDown();
-                break;
-            case 'ArrowUp':
-                this.rotate();
-                break;
-            case 'p':
-                if (this.isPlaying) {
-                    this.pause();
-                } else {
-                    this.resume();
-                }
-                break;
-        }
-    }
-
-    freezePiece() {
-        for (let y = 0; y < this.currentPiece.length; y++) {
-            for (let x = 0; x < this.currentPiece[y].length; x++) {
-                if (this.currentPiece[y][x]) {
-                    const boardY = this.currentPosition.y + y;
-                    const boardX = this.currentPosition.x + x;
-                    if (boardY >= 0) {
-                        this.board[boardY][boardX] = this.currentShape;  // 保存方塊類型而不是簡單的1
-                    }
-                }
-            }
-        }
-        this.updateBoardDisplay();
     }
 
     updateBoardDisplay() {
@@ -219,6 +147,62 @@ class Tetris {
                 }
             });
         }
+    }
+
+    start() {
+        if (this.isPlaying) return;
+        
+        this.reset(); // 開始新遊戲時重置
+        this.isPlaying = true;
+        this.generateNewPiece();
+        const speed = Math.max(100, 1000 - (this.level - 1) * 100);
+        this.gameInterval = setInterval(() => this.moveDown(), speed);
+        
+        // 添加鍵盤控制
+        document.addEventListener('keydown', this.handleKeyPress);
+    }
+
+    handleKeyPress(event) {
+        if (event.key === 'p') {
+            if (this.isPlaying) {
+                this.pause();
+            } else {
+                this.resume();
+            }
+            return;
+        }
+
+        if (!this.isPlaying) return;
+
+        switch (event.key) {
+            case 'ArrowLeft':
+                this.moveLeft();
+                break;
+            case 'ArrowRight':
+                this.moveRight();
+                break;
+            case 'ArrowDown':
+                this.moveDown();
+                break;
+            case 'ArrowUp':
+                this.rotate();
+                break;
+        }
+    }
+
+    freezePiece() {
+        for (let y = 0; y < this.currentPiece.length; y++) {
+            for (let x = 0; x < this.currentPiece[y].length; x++) {
+                if (this.currentPiece[y][x]) {
+                    const boardY = this.currentPosition.y + y;
+                    const boardX = this.currentPosition.x + x;
+                    if (boardY >= 0) {
+                        this.board[boardY][boardX] = this.currentShape;  // 保存方塊類型而不是簡單的1
+                    }
+                }
+            }
+        }
+        this.updateBoardDisplay();
     }
 
     checkLines() {
@@ -269,6 +253,7 @@ class Tetris {
             clearInterval(this.gameInterval);
             this.isPlaying = false;
             document.getElementById('pause-btn').textContent = '繼續';
+            document.removeEventListener('keydown', this.handleKeyPress);
         }
     }
 
@@ -278,11 +263,13 @@ class Tetris {
             const speed = Math.max(100, 1000 - (this.level - 1) * 100);
             this.gameInterval = setInterval(() => this.moveDown(), speed);
             document.getElementById('pause-btn').textContent = '暫停';
+            document.addEventListener('keydown', this.handleKeyPress);
         }
     }
 
     reset() {
         clearInterval(this.gameInterval);
+        document.removeEventListener('keydown', this.handleKeyPress);
         this.board = Array(20).fill().map(() => Array(10).fill(0));
         this.score = 0;
         this.level = 1;
