@@ -164,15 +164,15 @@ class Tetris {
 
     handleKeyPress(event) {
         // 先處理空白鍵，防止頁面滾動
-        if (event.code === 'Space') {  // 改用 event.code 來判斷空白鍵
-            event.preventDefault();  // 防止頁面滾動
+        if (event.code === 'Space') {
+            event.preventDefault();
             if (this.isPlaying) {
                 this.hardDrop();
             }
             return;
         }
 
-        if (event.key === 'p') {
+        if (event.code === 'KeyP') {
             if (this.isPlaying) {
                 this.pause();
             } else {
@@ -183,17 +183,17 @@ class Tetris {
 
         if (!this.isPlaying) return;
 
-        switch (event.key.toLowerCase()) {  // 添加 toLowerCase() 使大小寫都可以
-            case 'arrowleft':
+        switch (event.code) {
+            case 'ArrowLeft':
                 this.moveLeft();
                 break;
-            case 'arrowright':
+            case 'ArrowRight':
                 this.moveRight();
                 break;
-            case 'arrowdown':
+            case 'ArrowDown':
                 this.moveDown();
                 break;
-            case 'z':  // 改成 z 鍵旋轉
+            case 'KeyZ':
                 this.rotate();
                 break;
         }
