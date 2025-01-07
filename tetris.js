@@ -183,17 +183,17 @@ class Tetris {
 
         if (!this.isPlaying) return;
 
-        switch (event.key) {
-            case 'ArrowLeft':
+        switch (event.key.toLowerCase()) {  // 添加 toLowerCase() 使大小寫都可以
+            case 'arrowleft':
                 this.moveLeft();
                 break;
-            case 'ArrowRight':
+            case 'arrowright':
                 this.moveRight();
                 break;
-            case 'ArrowDown':
+            case 'arrowdown':
                 this.moveDown();
                 break;
-            case 'ArrowUp':
+            case 'z':  // 改成 z 鍵旋轉
                 this.rotate();
                 break;
         }
