@@ -264,6 +264,8 @@ class Tetris {
             this.isPlaying = false;
             document.getElementById('pause-btn').textContent = '繼續';
             document.removeEventListener('keydown', this.handleKeyPress);
+            // 顯示暫停畫面
+            document.getElementById('pause-screen').style.display = 'flex';
         }
     }
 
@@ -274,6 +276,8 @@ class Tetris {
             this.gameInterval = setInterval(() => this.moveDown(), speed);
             document.getElementById('pause-btn').textContent = '暫停';
             document.addEventListener('keydown', this.handleKeyPress);
+            // 隱藏暫停畫面
+            document.getElementById('pause-screen').style.display = 'none';
         }
     }
 
@@ -289,6 +293,8 @@ class Tetris {
         document.getElementById('score').textContent = '0';
         document.getElementById('level').textContent = '1';
         document.getElementById('pause-btn').textContent = '暫停';
+        // 隱藏暫停畫面
+        document.getElementById('pause-screen').style.display = 'none';
     }
 
     hardDrop() {
@@ -332,4 +338,4 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('reset-btn').addEventListener('click', () => {
         game.reset();
     });
-});
+}); 
