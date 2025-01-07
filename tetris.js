@@ -173,7 +173,9 @@ class Tetris {
             return;
         }
 
+        // 修改 P 鍵的處理邏輯
         if (event.code === 'KeyP') {
+            // 移除 isPlaying 檢查，讓暫停時也能處理 P 鍵
             if (this.isPlaying) {
                 this.pause();
             } else {
@@ -182,6 +184,7 @@ class Tetris {
             return;
         }
 
+        // 其他按鍵只在遊戲進行時處理
         if (!this.isPlaying) return;
 
         switch (event.code) {
@@ -263,7 +266,8 @@ class Tetris {
             clearInterval(this.gameInterval);
             this.isPlaying = false;
             document.getElementById('pause-btn').textContent = '繼續';
-            document.removeEventListener('keydown', this.handleKeyPress);
+            // 不要在暫停時移除鍵盤事件監聽器，這樣才能檢測到 P 鍵的按下
+            // document.removeEventListener('keydown', this.handleKeyPress);
             // 顯示暫停畫面
             document.getElementById('pause-screen').style.display = 'flex';
         }
@@ -275,7 +279,8 @@ class Tetris {
             const speed = Math.max(100, 1000 - (this.level - 1) * 100);
             this.gameInterval = setInterval(() => this.moveDown(), speed);
             document.getElementById('pause-btn').textContent = '暫停';
-            document.addEventListener('keydown', this.handleKeyPress);
+            // 不需要重新添加事件監聽器，因為沒有移除
+            // document.addEventListener('keydown', this.handleKeyPress);
             // 隱藏暫停畫面
             document.getElementById('pause-screen').style.display = 'none';
         }
